@@ -1,0 +1,88 @@
+---
+title: "Chapters 13 and 14"
+author: "David Kane"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rstanarm)
+library(broom)
+library(tidyverse)
+
+x <- read_rds("ch13_nes.rds")
+
+```
+
+# Scene 1
+
+**Prompt:** Estimate a new model of `dvote`, this time with two explanatory variables: `race` and `ideology`. Name the model `z_1`. (Like last time, you should treat `ideology` as a continuous variable.) Write down brief answers to the following questions: 
+
+* What is the probability that a Black respondent with ideology of 4 (which means "Moderate") votes Democratic? Solve this just by plugging in the estimated parameters from the regression and using `plogis()`, as RAOS does on page 204.
+
+* How much less likely is a someone to vote for the Democrat who has ideology 4 compared to someone with ideology 5? Use the divide-by-4 rule, as discussed on page 204.
+
+* Check the accuracy of the divide-by-4 rule by calculating the probability of voting Democratic by simply tabulating the votes within each income category, like we did with `gender` last week.
+
+* The coefficient of raceOther should be around -2.2. Interpret its meaning in the context of someone with a Moderate ideology. Do not use odds ratios.
+
+
+
+# Scene 2
+
+**Prompt:** Notice how the intercept of `z_1` makes no sense since `ideology` can not be zero. Always check to see if the questions you are asking --- How to interpret the intercept? --- make sense in the context of your data. As RAOS suggests (pages 173ff), it often makes sense to center the data for just this reason. Estimate a new model, `z_2` which is just like `z_1` except that ideology is centered. Interpret the meaning of the intercept.
+
+
+# Scene 3
+
+**Prompt:** Chapter 14 has an extensive discussion about the use of interactions in logistic models. Estimate a new model, `z_3`, which is just `z_2` and an interaction between `race` and `c_ideology`. See pages 222ff for useful discussion.
+
+* Interpret the intercept (2.4) of this model. Is that interpretation the same as for model `z_3`? Why or why not?
+
+* Interpret the coefficient of "raceWhite:c_ideology". Pages 226ff may also be helpful.
+
+* Advanced Question: Produce plots for your model similar to 14.4(b) and 14.10(a).
+
+
+# Scene 4
+
+**Prompt:** Let's focus on `z_3`. Use `posterior_linpred()` on `z_3` to create a matrix of estimated probabilities. Consider the 3rd column of this matrix. Create a histogram and explain its meaning. See page 206.
+
+
+
+# Scene 5
+
+**Prompt:** Use `posterior_predict()` on `z_3` to create a matrix of predictions. Create a histogram and explain its meaning. When might it be useful to use this? See pages 136-137 for a concrete example of the use of predictive simulations.
+
+
+
+# Scene 6
+
+**Prompt:** Evaluate the performance of `z_1` using leave-one-out validation. Explain the terms in the printed display. See pages 211 -- 212. You may also find it useful to review pages 164ff. Although that discussion used linear models, the same approach applies in logistic models.
+
+
+# Scene 7
+
+**Prompt:** Compare the performance of `z_1` and `z_3`. Which one should we use? Why?   
+
+# Scene 8
+
+**Prompt:** =Consider a set of 10 new voters. Estimate the probability of each voting for the Democratic candidate, using `posterior_linpred()` and `z_1`.
+
+
+# Challenge Problems
+
+I do not expect to get to these, but who knows?
+
+# Scene 9
+
+**Prompt:** So far, we have pooled all our data together. But what if we wanted to estimate a different model for each year. Do that with our `z_1` model. In other words, the variables included in the model are the same. But, because the data for each year is different, we will have different parameter estimates for each year. (Might want to see how *PPBDS* [does that](https://davidkane9.github.io/PPBDS/13-classification.html#fitting-many-models-using-map-1).)
+
+# Scene 10
+
+**Prompt:** Now that you have an object with many models. Can you tell us the election in which men/women were most split in their voting? How about in which election ideology mattered most? How about which election this model worked "best" for? Are there other interesting questions which we can explore?
+
+# Scene 11
+
+**Prompt:** Let's make a plot! Page 207 has a graph which shows the association between income and voting across these years. Make a similar plot, one for `race` and one for `ideology`. Does the latest version of ggplot make this easier?
+
