@@ -148,11 +148,16 @@ z3_intercept <- plogis(2.4)
 
 * Interpret the intercept (2.4) of this model. Is that interpretation the same as for model `z_3`? Why or why not?
 
-A black total moderate has a `r z3_intercept` percent probability of voting democrat.
+A black total moderate has a `r z3_intercept` percent probability of voting democrat. 
+
+Same interpretation - but value is not the same bc value is conditional to the model (dif models have dif values)
 
 * Interpret the coefficient of "raceWhite:c_ideology". Pages 226ff may also be helpful.
 
-A one unit difference in ideology corresponds to a -0.4 difference in the coef for raceWhite. raceWhite has a negative coef, so increases in ideology increase this negative association. This makes sense as white people with more conservative ideologies are less likely to vote democrat.
+A one unit difference in ideology corresponds to a -0.4 difference in the coef for raceWhite. raceWhite has a negative coef, so increases in ideology increase this negative association. This makes sense as white people with more conservative ideologies are less likely to vote democrat than black people.
+
+forcasitng the vote of white voters is more sensitive than for black voters
+
 
 * Advanced Question: Produce plots for your model similar to 14.4(b) and 14.10(a).
 
@@ -163,7 +168,9 @@ A one unit difference in ideology corresponds to a -0.4 difference in the coef f
 
 ```{r}
 
-linpred <- posterior_linpred(z_3)
+# posterior linpred models underlying probability (on 0-1 scale) of voting democratic
+
+linpred <- posterior_linpred(z_3, transform = TRUE)
 
 matrix <- linpred[,3]
 
@@ -171,10 +178,35 @@ hist(matrix)
 
 ```
 
+making an estimate for each person in the data set - who is a white respondent w/ c_ideology of 2 (raw ideology of 6)
+- project for every person a bunch of times to get a bunch of estimates of the probability of them voting democrat 
+    - use transform = TRUE or plogis to the whole thing to get all the numbers in normal scale
+- gives an indication of uncertainty
+
+
 
 # Scene 5
 
 **Prompt:** Use `posterior_predict()` on `z_3` to create a matrix of predictions. Create a histogram and explain its meaning. When might it be useful to use this? See pages 136-137 for a concrete example of the use of predictive simulations.
+
+```{r}
+
+# posterior predict is running the world 4000 times
+
+predict <- posterior_predict(z_3, transform = TRUE)
+
+hist(predict)
+
+```
+
+creates giant matrix
+- columns are the specific people in the data set
+- rows are iterations - and result in either a 0 or 1 dvote prediction for that person
+- this also gives us a sense of uncertainty/percentage of the time the person would vote democrat 
+
+Histogram
+- across all people and all iterations - more people in this sample are predicted to vote non-democrat (conservative) than democrat
+
 
 
 
@@ -182,14 +214,36 @@ hist(matrix)
 
 **Prompt:** Evaluate the performance of `z_1` using leave-one-out validation. Explain the terms in the printed display. See pages 211 -- 212. You may also find it useful to review pages 164ff. Although that discussion used linear models, the same approach applies in logistic models.
 
+```{r}
+
+loo1 <- loo(z_1)
+
+```
+
+
+elpd_loo is the estimated log score
+
+p_loo is the estimated effective number of predictors 
+
+looic is the LOO infromation criterion (-2*elpd_loo)
 
 # Scene 7
 
 **Prompt:** Compare the performance of `z_1` and `z_3`. Which one should we use? Why?   
 
+```{r}
+
+loo3 <- loo(z_3)
+
+loo_compare(loo1, loo3)
+
+```
+
+z_3 is the better model and should be used because it's elpd_loo value is closer to 0
+
 # Scene 8
 
-**Prompt:** =Consider a set of 10 new voters. Estimate the probability of each voting for the Democratic candidate, using `posterior_linpred()` and `z_1`.
+**Prompt:** Consider a set of 10 new voters. Estimate the probability of each voting for the Democratic candidate, using `posterior_linpred()` and `z_1`.
 
 
 # Challenge Problems
