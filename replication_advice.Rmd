@@ -1,0 +1,100 @@
+---
+title: "Replication Advice, Version 1"
+author: "David Kane"
+date: "`r library(lubridate); today()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+This is a advice for the replication papers in Gov 1006. Follow this advice, or document your reasoning for not doing so in your Rmd. Make sure you have read “[Publication, Publication](https://www.jstor.org/stable/pdf/20451691.pdf)” by Gary King. *PS: Political Science and Politics*, Vol. 39, No. 1 (Jan., 2006), pp. 119-125 and "[How to Write a Publishable Paper as a Class Project](https://gking.harvard.edu/papers)" by Gary King.
+
+
+## Author Contact
+
+You must contact the authors at least twice via e-mail. (You may have as much or as little other contact with them as you/they like.) Both times, you must cc Preceptor and your TF. The first e-mail, sent four weeks before Demo Day, is to inform them that you are replicating their article for this course. Provide a link to the course syllabus and a link to King (2006). Thank them for making their code/data available. The second e-mail, sent when you turn in your final version, must also cc Preceptor and your TF. It should, again, thank them. It should include your paper as a PDF attachment. It should also provide a link to your GitHub repo. You will lose significant points if you fail to follow these instructions.
+
+
+## Abstract
+
+Begin your paper with an abstract. The first sentence of the abstract is a one sentence summary of the paper you are replicating. Example:
+
+> Enos (2014) shows that exposing Boston commuters to Spanish-speakers causes those commuters to adopt more conservatove opinions about immigration.
+
+Does it have to be a perfect sentence? No. Can you completely summarize an academic paper in one sentence? No. Do the best you can. Focus on those aspects of the paper which are most relevant to your replication efforts and/or to your extension.
+
+The second sentence of your abstract should report the results of your replication effort. With luck, it succeeded. If it was partially successful, write that. If it failed in an important way, tell us.
+
+The third and fourth sentence of your abstract tell us what you did and what you found.
+
+The fifth sentence is more open-ended. Why does what you found matter? Why should we care?
+
+95% of the people who even bother to open your paper will only read the abstract. Make every word perfect.
+
+## Introduction and Conclusion
+
+If the abstract looks interesting, readers may then read the introduction or the conclusion. You should spend as much time on the quality of the prose in the introduction and conclusion as you do on the rest of the paper.
+
+Both the introduction and the conclusion have the same basic structure: One paragraph for each of the sentences in the abstract. 
+
+The first paragraph is a review of the paper you are replicating. Flesh out the details. Tell us about the data and the model. Place it within the relevant literature, via a key citation or two. Highlight implications and caveats. Again, it is hard to summarize a 25 page paper in a paragraph. Do your best. Note that the paper's own abstract is often a useful guide.
+
+The second paragraph provides more details on your replications. Mention that you used R, and provide an citation to R in your bibliography. (See `citation()`.) Cite the location from which you got the data and code for your replication. (This might be to the Dataverse, a webpage or "personal communication" with the author.) Provide a footnote with a link to your repo. 
+
+The third and fourth paragraphs are more flexible. Indeed, they might be only one paragraph or they might be several. What did you do? What did you find?
+
+The final paragraph is different between the introduction and the conclusion. In the introduction, it may not even exist! (We don't want to be overly didactic here. There are many ways to write a great paper.) Or it may just provide a roadmap to the rest of the paper. In the conclusion, the last paragraph is where you get to speculate: What does it all mean? What should we research next?
+
+## Literature Review
+
+After the introduction, you will have a literature review, not dissimilar from the one in the paper you are replicating. (You do not get to assume that we have read the paper you are replicating. We haven't. So, if something is worth understanding about the literature, then you need to tell us, and in your own words.) You also need to closely review any relevant literature that has come out since the paper was published. (We will take off points if a simple Google scholar search brings up a relevant article which you should have mentioned.) Of course, if a lot of time has passed and/or this is a particularly active area of research, there may be dozens of relevant articles. You can't review them all. Pick the most important ones, especially those written by the same authors and/or using the same data and/or performing an analysis similar to your own extension.
+
+
+## Replication
+
+If you were able to replicate every detail of the paper, then this section might be only one sentence. And that is fine!
+
+But, in general, this won't be the case. Tell us about anything that did not replicate, any aspect of the code which was different from the paper's description of the model, any subtleties. If there were major problems with the replication, then dive into those details. 
+
+## Extension
+
+You must do something more than simply replicate the paper's results. You are a scholar, seeking admittance to the *School of Athens*. You must contribute something, even a small something, to human knowledge.
+
+The easiest way of doing so is to use the same data and overall model as the original paper while making a small but meaningful change. Perhaps you add a variable to the regression. Perhaps you remove a variable. Perhaps you add an interaction term. There are many, many possibilities. Talk them over with your peers. Talk them over with us.
+
+And, then, presto! You have your extension. In general, there are two possibilities. First, the primary results of the paper are largely unchanged even with your extension, in which case their conclusions are even more robust than they initially claimed. Second, the primary results change, in which case their conclusions are fragile to a small change in the mode. (Discuss Leamer (1983) from the syllabus.) Either result is a contribution to human knowledge.
+
+Of course, you can get more fancy if you want, but the above is more than enough.
+
+## Tables and Figures
+
+Many people, after looking at the abstract, will ignore the prose and just go straight for the tables and [figures](https://bookdown.org/yihui/bookdown/figures.html). This means that you need captions which are, on average, a paragraph long. (Consult almost any published paper for an example.) The caption explains most of what you need to know to understand the table/graphic. It is very detailed. It is also, when considered in conjunction with the paper itself, somewhat redundant. And that is OK! It must be possible for the reader, looking at just your abstract and your tables/graphics, to have a fairly complete understanding of your paper.
+
+The converse holds as well. The reader should be able to read your paper, without consulting the tables/graphics, and understand everything.
+
+One reason we use pdf_document2 as our document type is that, in conjunction with the **bookdown** package, it makes the creation of long captions for numbered figures/tables much easier.
+
+## Appendix
+
+Your appendix should include the code necessary for replicating the results of the paper. (If the paper has dozens of results, you do not need to replicate them all. Consult with us.) These replications will not appear in the final PDF of your paper. Normal readers don't care. This detail is only provided for technical readers who want to look at what you have done. In the printed version, you will just have a sentence like "Results from Enos (2014) were successfully replicated." along with a footnote providing the url for your GitHub repository. In the Rmd (available at the GitHub repo), the code is present, but the results are not printed.
+
+Note that there are other ways one can handle this. You can, if you want, go ahead and print out the replication of a table or two. This might be wise if the replication fails a little. If there are significant problems with the replication, the Appendix should provide an image from the original article of each problematic table/figure and then your attempted replication, along with some text which highlights significant differences.
+
+
+## Repo
+
+You must have a professional-looking README.
+
+Your directories/code/data must be well-organized.
+
+Your should include the original paper, along with copies of the their code and data, untouched by you. 
+
+Your commit messages should not be embarrassing.
+
+## Submission
+
+You must submit your paper in two ways. First, you submit a PDF via Canvas. Second, you must edit our class.Rmd file which includes information on everyone's replication. This becomes part of the permanent public record of Gov 1006, just [as we do](https://www.davidkane.info/files/final_projects.html) in Gov 1005.
+
+
