@@ -18,13 +18,91 @@ x <- read_rds("ch13_nes.rds")
 
 **Prompt:** Estimate a new model of `dvote`, this time with two explanatory variables: `race` and `ideology`. Name the model `z_1`. (Like last time, you should treat `ideology` as a continuous variable.) Write down brief answers to the following questions: 
 
+```{r model}
+
+z_1 <- stan_glm(dvote ~ race + ideology, data = x, refresh = 0, family = "binomial")
+
+print(z_1, detail = FALSE, digits = 1)
+
+```
+
+
 * What is the probability that a Black respondent with ideology of 4 (which means "Moderate") votes Democratic? Solve this just by plugging in the estimated parameters from the regression and using `plogis()`, as RAOS does on page 204.
+
+```{r}
+
+# Kane
+
+res <- tidy(z_1) %>%
+  filter(term %in% c("(Intercept)", "ideology")) %>%
+    pull(estimate)
+
+# plogis(res[1] - )
+
+# Molly
+
+invlogit <- plogis
+
+prob_black_moderate <- invlogit(6.1 - 0.9*(4))
+
+```
+
+The probability that a black respondent w/ ideology 4 votes Democratic is `r prob_black_moderate`.
+
 
 * How much less likely is a someone to vote for the Democrat who has ideology 4 compared to someone with ideology 5? Use the divide-by-4 rule, as discussed on page 204.
 
+```{r}
+
+prob <- -.9/4
+
+# divide by 4 only works in middle of dist
+
+```
+
+A difference of 1 in ideology corresponds to no more than a `r prob` percent difference in the probability of voting Democratic.
+
+
 * Check the accuracy of the divide-by-4 rule by calculating the probability of voting Democratic by simply tabulating the votes within each income category, like we did with `gender` last week.
 
+```{r }
+
+four <- x %>%
+  filter(ideology == "4") %>%
+  summarize(perc_dvote = mean(dvote))
+
+five <- x %>%
+  filter(ideology == "5") %>%
+  summarize(perc_dvote = mean(dvote))
+
+dif <- five - four
+
+# Kane
+
+x %>%
+  group_by(ideology) %>%
+  summarize(dvotes = sum(dvote), all = n()) %>%
+  mutate(per = dvotes/all)
+
+```
+
+Probability by tabulating votes was found to be `r dif`.
+
+
 * The coefficient of raceOther should be around -2.2. Interpret its meaning in the context of someone with a Moderate ideology. Do not use odds ratios.
+
+A race other moderate is expected to vote democrat with a probability `r dif` percent less than a black moderate.
+
+always do this relevant to another counterfactual!
+
+```{r}
+
+black <- plogis(6.1 - .9*4)
+other <- plogis(6.1 - 2.2 - .9*4)
+
+dif <- black - other
+
+```
 
 
 
@@ -32,14 +110,49 @@ x <- read_rds("ch13_nes.rds")
 
 **Prompt:** Notice how the intercept of `z_1` makes no sense since `ideology` can not be zero. Always check to see if the questions you are asking --- How to interpret the intercept? --- make sense in the context of your data. As RAOS suggests (pages 173ff), it often makes sense to center the data for just this reason. Estimate a new model, `z_2` which is just like `z_1` except that ideology is centered. Interpret the meaning of the intercept.
 
+```{r}
+
+centered <- x %>%
+  mutate(c_ideology = ideology - 4)
+
+# intercept is now a totally moderate person
+# because 4 is the value for a totally moderate person
+
+z_2 <- stan_glm(dvote ~ race + c_ideology, data = centered, refresh = 0, family = "binomial")
+
+print(z_2, detail = FALSE, digits = 1)
+
+# assume ideology 0 to determine meaning of intercept
+
+intercept <- plogis(2.6)
+
+```
+
+A black total moderate has a `r intercept` percent probability of voting democrat.
+
 
 # Scene 3
 
 **Prompt:** Chapter 14 has an extensive discussion about the use of interactions in logistic models. Estimate a new model, `z_3`, which is just `z_2` and an interaction between `race` and `c_ideology`. See pages 222ff for useful discussion.
 
+```{r model 3}
+
+z_3 <- stan_glm(dvote ~ race * c_ideology, data = centered, refresh = 0, family = "binomial")
+
+print(z_3, detail = FALSE, digits = 1)
+
+z3_intercept <- plogis(2.4)
+
+```
+
+
 * Interpret the intercept (2.4) of this model. Is that interpretation the same as for model `z_3`? Why or why not?
 
+A black total moderate has a `r z3_intercept` percent probability of voting democrat.
+
 * Interpret the coefficient of "raceWhite:c_ideology". Pages 226ff may also be helpful.
+
+A one unit difference in ideology corresponds to a -0.4 difference in the coef for raceWhite. raceWhite has a negative coef, so increases in ideology increase this negative association. This makes sense as white people with more conservative ideologies are less likely to vote democrat.
 
 * Advanced Question: Produce plots for your model similar to 14.4(b) and 14.10(a).
 
@@ -48,6 +161,15 @@ x <- read_rds("ch13_nes.rds")
 
 **Prompt:** Let's focus on `z_3`. Use `posterior_linpred()` on `z_3` to create a matrix of estimated probabilities. Consider the 3rd column of this matrix. Create a histogram and explain its meaning. See page 206.
 
+```{r}
+
+linpred <- posterior_linpred(z_3)
+
+matrix <- linpred[,3]
+
+hist(matrix)
+
+```
 
 
 # Scene 5
